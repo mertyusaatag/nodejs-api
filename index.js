@@ -1,17 +1,20 @@
-const { passengerDatabase, driverDatabase } = require('./database')
-const printBookingHistory = require('./lib/print-booking-history')
-async function main()
-{
-    const stefan = await driverDatabase.findBy('name', 'Stefan')
-    const armagan = await passengerDatabase.findByName('Armagan')
-    
-    armagan.book(stefan, 'Kreuzberg', 'Wannsee')
-    passengerDatabase.update(armagan)
-    
-    printBookingHistory(armagan)
-    
-    console.log(await passengerDatabase.findBy('location', 'Mitte'))
-    
-}
+const express = require('express')
+const Flatted = require('flatted')
+const { passengerDatabase } = require('./database')
+const app = express()
+const port = 3000
 
-main()
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+// farklı yazım
+async function onPassanger(req,res) {
+    const passangers = await passengerDatabase.load()
+    res.send(Flatted.stringify(passangers))
+}
+//2. parametreye gönderiyorum.
+app.get('/passangers',  onPassanger )
+
+app.listen(port, () => {
+  console.log(`Bağlantı Başarılı... Port: ${port}`)
+})
