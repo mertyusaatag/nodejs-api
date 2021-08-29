@@ -39,6 +39,12 @@ app.post('/passengers', async(req,res)=> {
   res.send(person)
 })
 
+app.delete('/passengers/:passengerId' ,async (req,res) => {
+  await passengerDatabase.removeBy('id',req.params.passengerId)
+
+  res.send('OK')
+})
+
 // farklı yazım
 async function onPassenger(req,res) {
     const passengers = await passengerDatabase.load()
