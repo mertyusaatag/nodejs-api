@@ -32,10 +32,15 @@ app.get('/passenger/:passengerId' , async (req,res) => {
 })
 
 app.post('/passengers', async(req,res)=> {
-  console.log(Flatted.stringify(req.body))
-  const person = Passenger.create(req.body)
+ // console.log(Flatted.stringify(req.body))
+  // const person = Passenger.create(req.body)
   
-  await passengerDatabase.insert(person)
+  // await passengerDatabase.insert(person)
+  // res.send(person)
+
+  //üsteki yer db deki save methodundaki if kontrolü sayesinde aşağıdakine dönüştü
+
+  const person = await passengerDatabase.insert(req.body)
   res.send(person)
 })
 
@@ -53,7 +58,16 @@ async function onPassenger(req,res) {
 //2. parametreye gönderiyorum.
 app.get('/passengers',  onPassenger )
 
+app.get('/passenger/:id/bookings', async (req,res) => {
+  const person = await passengerDatabase.find(req.params.id)
+  const bookings = await person.bookings
 
+  res.send(Flatted.stringify(bookings))
+})
+
+app.post('/passenger/:id/bookings',async (req,res) => {
+  //
+})
 
 app.listen(port, () => {
   console.log(`Bağlantı Başarılı... Port: ${port}`)
